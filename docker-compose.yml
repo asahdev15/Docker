@@ -1,0 +1,42 @@
+version: '3'
+services:
+  db:
+    build: ./uptime-db
+    container_name: db
+    ports:
+      - "8082:8082"
+    networks:
+      - back-end
+  cache:
+    build: ./uptime-cache
+    container_name: cache
+    ports:
+      - "8083:8083"
+    networks:
+      - back-end
+  monitoring:
+    build: ./uptime-jobs
+    container_name: monitoring
+    ports:
+      - "8083:8083"
+    networks:
+      - back-end
+  register:
+    build: ./uptime-api-register
+    container_name: register
+    ports:
+      - "8080:8080"
+    networks:
+      - front-end
+      - back-end
+  status:
+    build: ./uptime-api-status
+    container_name: status
+    ports:
+      - "8081:8081"
+    networks:
+      - front-end
+      - back-end
+networks:
+  front-end:
+  back-end:

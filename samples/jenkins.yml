@@ -1,0 +1,46 @@
+# docker run -p 8080:8080 -v /Users/asahdev/Data/Jenkins:/var/jenkins_home -u root jenkins/jenkins
+
+#apiVersion: apps/v1
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins-dc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      name: jenkins-pod
+      labels:
+        app: jenkins
+    spec:
+      containers:
+        - name: jenkins-container
+          image: jenkins/jenkins:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /var/jenkins_home
+              name: jenkins-home
+
+      volumes:
+        - name: jenkins-home
+          hostPath:
+            path: /Users/asahdev/Files/Work/DockerVolumes/jenkins_home
+            type: Directory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30001
+  selector:
+    app: jenkins

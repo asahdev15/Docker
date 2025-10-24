@@ -1,0 +1,41 @@
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: elastic-dc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elastic
+  template:
+    metadata:
+      name: elastic-pod
+      labels:
+        app: elastic
+    spec:
+      containers:
+        - name: elastic-container
+          image: elasticsearch:6.4.2
+          ports:
+            - containerPort: 9200
+              protocol: TCP
+            - containerPort: 9300
+              protocol: TCP
+          env:
+            - name: discovery.type
+              value: single-node
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: jenkins
+#spec:
+#  type: NodePort
+#  ports:
+#    - port: 8080
+#      targetPort: 8080
+#      nodePort: 30001
+#  selector:
+#    app: jenkins
